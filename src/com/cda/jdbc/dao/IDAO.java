@@ -6,5 +6,6 @@ public interface IDAO<T> {
 	T save(T o);
 	List<T> getAll();
 	void remove(String nomOuID);
-	void update(String nomOuID);
+	void update(String oldLabel,String newLabel);
+	
 }

@@ -61,7 +61,7 @@ public class BrandDAOImpl implements IBrandDAO {
 	}
 
 	@Override
-	public void update(String nomOuID) {
+	public void update(String oldLabel, String newLabel) {
 		// TODO Auto-generated method stub
 
 	}

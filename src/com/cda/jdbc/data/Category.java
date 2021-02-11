@@ -1,33 +1,36 @@
 package com.cda.jdbc.data;
 
-import java.util.List;
-import com.cda.jdbc.dao.IDAO;
-
-public class Category implements IDAO<Category>{
-
-
-	@Override
-	public Category save(Category o) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void remove(String nomOuID) {
-		// TODO Auto-generated method stub
+public class Category {
+	private int idCategory;
+	private String labelCategory;
+	
+	public Category() {
 		
 	}
-
-	@Override
-	public void update(String nomOuID) {
-		// TODO Auto-generated method stub
-		
+	
+	public Category(String pLabelCategory) {
+		this.labelCategory=pLabelCategory;
+	}	
+	
+	public Category(int pIdCategory,String pLabelCategory) {
+		this.idCategory = pIdCategory;
+		this.labelCategory = pLabelCategory;
+	}
+	
+	public int getIdCategory() {
+		return idCategory;
+	}
+	public void setIdCategory(int idCategory) {
+		this.idCategory = idCategory;
+	}
+	public String getLabelCategory() {
+		return labelCategory;
+	}
+	public void setLabelCategory(String labelCategory) {
+		this.labelCategory = labelCategory;
 	}
 
-	@Override
-	public List<Category> getAll() {
-		// TODO Auto-generated method stub
-		return null;
+	public String toString() {
+		return "[id=" + idCategory + ", label=" + labelCategory + "]";
 	}
-
 }
