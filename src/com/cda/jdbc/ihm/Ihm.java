@@ -36,6 +36,6 @@ public class Ihm {
 	}
 	
 	public void display(String message, boolean withLineBreak) {
-		System.out.print(message+(withLineBreak?"\n":""));
+		System.out.print(message+(withLineBreak ? "\n" : ""));
 	}
 }
