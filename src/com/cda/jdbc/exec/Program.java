@@ -2,11 +2,15 @@ package com.cda.jdbc.exec;
 
 import static com.cda.jdbc.ihm.Ihm.IHM_INS;
 import java.util.TreeMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.cda.jdbc.ihm.WrongInputException;
 import com.cda.jdbc.menu.action.Action;
 import com.cda.jdbc.menu.action.IAllActions;
 
 public class Program {
+	private static final Logger logger = LoggerFactory.getLogger(Program.class);
 	public static void main(String[] args) {
 		TreeMap<Integer, Action> actions = new TreeMap<>();
 		addAction(actions, IAllActions.EXIT);
@@ -44,6 +48,7 @@ public class Program {
 			try {
 				vActionSaisie = IHM_INS.readNaturalNb();
 			} catch (WrongInputException e) {
+				logger.error("Erreur: " + e);
 				vActionSaisie = IAllActions.ACTION_NOT_FOUND.getId();
 			}
 			isContinue = actions.getOrDefault(vActionSaisie, IAllActions.ACTION_NOT_FOUND).execute();

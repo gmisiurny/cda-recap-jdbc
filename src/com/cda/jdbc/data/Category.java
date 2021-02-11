@@ -1,10 +1,9 @@
 package com.cda.jdbc.data;
 
 import java.util.List;
+import com.cda.jdbc.dao.IDAO;
 
-import com.cda.jdbc.dao.DAO;
-
-public class Category implements DAO<Category>{
+public class Category implements IDAO<Category>{
 
 
 	@Override

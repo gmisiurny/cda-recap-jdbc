@@ -31,6 +31,19 @@ public class Ihm {
 		return input;
 	}
 	
+	public String readWord() {
+		System.out.print("< ");
+		String saisie = this.scanner.next();
+		if (this.scanner.hasNextLine()) {
+			String vComm = this.scanner.nextLine();
+			if (this.displayComment) {
+				System.out.print(vComm);
+			}
+		}
+		System.out.println();
+		return saisie;
+	}
+	
 	public void display(String message) {
 		display(message, true);
 	}
