@@ -4,12 +4,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cda.jdbc.ihm.Ihm;
+
 public class MyConnection {
-	private static final Logger logger = LoggerFactory.getLogger("com.cda.jdbc.daosql.MyConnection");
+	private static final Logger logger = LoggerFactory.getLogger(MyConnection.class);
 	private static Connection connexion = null;
 
 	private MyConnection() {
@@ -22,8 +23,9 @@ public class MyConnection {
 													appProps.getProperty("password"));
 		}
 		catch (Exception e) {
-			logger.error("erreur : "+e);
-			System.out.println("Connexion à la BDD échouée");
+			logger.error("Erreur : " + e);
+			e.printStackTrace();
+			Ihm.IHM_INS.display("Connexion à la BDD échouée");
 		}
 	}
 
@@ -39,8 +41,8 @@ public class MyConnection {
 			try {
 				connexion.close();
 			} catch (SQLException e) {
-				logger.error("erreur : "+e);
-				e.printStackTrace();
+				logger.error("erreur : " + e);
+				Ihm.IHM_INS.display("La déconnexion à la BDD a échouée");
 			}
 		}
 	}
