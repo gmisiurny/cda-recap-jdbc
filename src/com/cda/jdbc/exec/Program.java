@@ -18,6 +18,18 @@ public class Program {
 		addAction(actions, IAllActions.READ_PIECE);
 		addAction(actions, IAllActions.UPDATE_PIECE);
 		addAction(actions, IAllActions.DELETE_PIECE);
+		addAction(actions, IAllActions.CREATE_MODEL);
+		addAction(actions, IAllActions.READ_MODEL);
+		addAction(actions, IAllActions.UPDATE_MODEL);
+		addAction(actions, IAllActions.DELETE_MODEL);		
+		addAction(actions, IAllActions.CREATE_BRAND);
+		addAction(actions, IAllActions.READ_BRAND);
+		addAction(actions, IAllActions.UPDATE_BRAND);
+		addAction(actions, IAllActions.DELETE_BRAND);		
+		addAction(actions, IAllActions.CREATE_VEHICULE);
+		addAction(actions, IAllActions.READ_VEHICULE);
+		addAction(actions, IAllActions.UPDATE_VEHICULE);
+		addAction(actions, IAllActions.DELETE_VEHICULE);
 		boolean isContinue;
 		int vActionSaisie = IAllActions.ACTION_NOT_FOUND.getId();
 		do {
