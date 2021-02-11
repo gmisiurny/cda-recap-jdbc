@@ -3,8 +3,8 @@ package com.cda.jdbc.ihm;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-
 public class Ihm {
+	public static final Ihm IHM_INS = new Ihm();
 	private Scanner scanner;
 	private boolean displayComment;
 
@@ -29,5 +29,13 @@ public class Ihm {
 		}
 		System.out.println();
 		return input;
+	}
+	
+	public void display(String message) {
+		display(message, true);
+	}
+	
+	public void display(String message, boolean withLineBreak) {
+		System.out.print(message+(withLineBreak?"\n":""));
 	}
 }
