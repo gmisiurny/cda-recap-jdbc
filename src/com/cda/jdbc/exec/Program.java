@@ -10,7 +10,14 @@ public class Program {
 	public static void main(String[] args) {
 		TreeMap<Integer, Action> actions = new TreeMap<>();
 		addAction(actions, IAllActions.EXIT);
-		
+		addAction(actions, IAllActions.CREATE_CATEGORY);
+		addAction(actions, IAllActions.READ_CATEGORY);
+		addAction(actions, IAllActions.UPDATE_CATEGORY);
+		addAction(actions, IAllActions.DELETE_CATEGORY);
+		addAction(actions, IAllActions.CREATE_PIECE);
+		addAction(actions, IAllActions.READ_PIECE);
+		addAction(actions, IAllActions.UPDATE_PIECE);
+		addAction(actions, IAllActions.DELETE_PIECE);
 		boolean isContinue;
 		int vActionSaisie = IAllActions.ACTION_NOT_FOUND.getId();
 		do {
