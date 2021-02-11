@@ -24,7 +24,7 @@ public interface IAllActions {
 	public static final UpdateVehicule UPDATE_VEHICULE = new UpdateVehicule();
 	public static final DeleteVehicule DELETE_VEHICULE = new DeleteVehicule();	
 	public static final SoldPiece SOLD_PIECE = new SoldPiece();
-	public static final DisplayAvailablePieces DISPLAY_AVAILABLE_PIECES = new DisplayAvailablePieces();
+	public static final DisplayAvailablePiecesPerModel DISPLAY_AVAILABLE_PIECES_PER_MODEL = new DisplayAvailablePiecesPerModel();
 	public static final AnnualSells ANNUAL_SELLS = new AnnualSells();
 	public static final MostRecentVehicules MOST_RECENT_VEHICULES = new MostRecentVehicules();
 	
