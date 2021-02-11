@@ -30,6 +30,10 @@ public class Program {
 		addAction(actions, IAllActions.READ_VEHICULE);
 		addAction(actions, IAllActions.UPDATE_VEHICULE);
 		addAction(actions, IAllActions.DELETE_VEHICULE);
+		addAction(actions, IAllActions.SOLD_PIECE);
+		addAction(actions, IAllActions.DISPLAY_AVAILABLE_PIECES);
+		addAction(actions, IAllActions.ANNUAL_SELLS);
+		addAction(actions, IAllActions.MOST_RECENT_VEHICULES);
 		boolean isContinue;
 		int vActionSaisie = IAllActions.ACTION_NOT_FOUND.getId();
 		do {
