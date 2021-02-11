@@ -16,7 +16,7 @@ public class Category {
 		this.idCategory = pIdCategory;
 		this.labelCategory = pLabelCategory;
 	}
-	
+
 	public int getIdCategory() {
 		return idCategory;
 	}
