@@ -1,10 +1,7 @@
-package exec;
+package com.cda.jdbc.exec;
 
 public class Program {
-
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		
 	}
-
 }
