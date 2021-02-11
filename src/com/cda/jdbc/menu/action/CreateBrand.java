@@ -17,10 +17,15 @@ final class CreateBrand extends Action {
 
 	@Override
 	public boolean execute() {
+<<<<<<< HEAD
 		Ihm.IHM_INS.display("Quelle est le nom de la marque ?");
 		String label = Ihm.IHM_INS.readWord();
 		Brand brand = new Brand(label);
 		this.brandDAO.save(brand);
+=======
+		IHM_INS.display("Comment s'appelle la modèle à créer ?");
+		// Ecrire le code pour créer la marque de voiture
+>>>>>>> 1f1b0bb (Partie Category OK)
 		return Boolean.TRUE;
 	}
 }

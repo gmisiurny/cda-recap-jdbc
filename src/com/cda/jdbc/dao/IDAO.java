@@ -7,4 +7,5 @@ public interface IDAO<T> {
 	List<T> getAll();
 	void remove(String nomOuID);
 	void update(String nomOuID);
+	
 }
