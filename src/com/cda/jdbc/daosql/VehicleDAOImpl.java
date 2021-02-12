@@ -23,21 +23,24 @@ public class VehicleDAOImpl implements IVehicleDAO {
 		Connection c = MyConnection.getConnection();
 		if (c != null) {
 			try {
-				PreparedStatement ps = c.prepareStatement("SELECT * FROM Vehicle WHERE label = ?");
+				PreparedStatement ps = c.prepareStatement("SELECT * FROM Vehicule WHERE numberPlate = ?");
 				ps.setString(1,vehicle.getNumberPlate());
 				ResultSet result = ps.executeQuery();
-				if (!result.next()) {
-					ps = c.prepareStatement("INSERT INTO Vehicle VALUES (?,?,?,?); ");
+				if(vehicle.getIdBrand()<0) {
+					IHM_INS.display("La marque n'existe pas dans la BDD");
+				}
+				else if(vehicle.getIdModel()<0) {
+					IHM_INS.display("Le modèle n'existe pas dans la BDD");
+				}
+				else if (!result.next()) {
+					ps = c.prepareStatement("INSERT INTO Vehicule VALUES (?,?,?,?); ");
 					ps.setString(1, vehicle.getNumberPlate());
 					ps.setInt(2, vehicle.getYearProduct());
 					ps.setInt(3, vehicle.getIdModel());
 					ps.setInt(4, vehicle.getIdBrand());
 					ps.executeUpdate();
-					ResultSet resultat = ps.getGeneratedKeys();
-					if (resultat.next()) {
-						logger.info("Véhicule créé");
-						return vehicle;
-					}
+					IHM_INS.display("Véhicule ajouté à la BDD");
+					logger.info("Véhicule créé");
 				} else {
 					logger.warn("Véhicule déjà dans la BDD");
 					IHM_INS.display("Véhicule déjà dans la BDD");
@@ -51,14 +54,14 @@ public class VehicleDAOImpl implements IVehicleDAO {
 	}
 
 	@Override
-	public Vehicle findByName(String label) {
+	public Vehicle findByName(String numberPlate) {
 		Connection c = MyConnection.getConnection();
 		Vehicle vehicle = new Vehicle();
 		if (c != null) {
 			try {
-				PreparedStatement ps = c.prepareStatement("SELECT * FROM Vehicle WHERE label=?;",
+				PreparedStatement ps = c.prepareStatement("SELECT * FROM Vehicule WHERE numberPlate=?;",
 						PreparedStatement.RETURN_GENERATED_KEYS);
-				ps.setString(1, label);
+				ps.setString(1, numberPlate);
 				ResultSet resultat = ps.executeQuery();
 				if (resultat.next()) {
 					logger.info("Vehicle consultée");
@@ -77,23 +80,23 @@ public class VehicleDAOImpl implements IVehicleDAO {
 	}
 
 	@Override
-	public void remove(String label) {
+	public void remove(String numberPlate) {
 		Connection c = MyConnection.getConnection();
 		if (c != null) {
 			try {
-				PreparedStatement ps = c.prepareStatement("SELECT * FROM Vehicle WHERE label = ?;");
-				ps.setString(1,label);
+				PreparedStatement ps = c.prepareStatement("SELECT * FROM Vehicule WHERE numberPlate = ?;");
+				ps.setString(1,numberPlate);
 				ResultSet result = ps.executeQuery();
-				if (result.next() == false) {
-					logger.warn("Le véhicule " + label + " n'existe pas");
-					IHM_INS.display("Le véhicule " + label + " n'existe pas");
+				if (!result.next()) {
+					logger.warn("Le véhicule " + numberPlate + " n'existe pas");
+					IHM_INS.display("Le véhicule " + numberPlate + " n'existe pas");
 				} else {
 					try {
-						ps = c.prepareStatement("DELETE FROM Vehicle WHERE label =?;");
-						ps.setString(1, label);
+						ps = c.prepareStatement("DELETE FROM Vehicule WHERE numberPlate =?;");
+						ps.setString(1, numberPlate);
 						ps.executeUpdate();
-						logger.info("Suppression de " + label + " dans la table Vehicle");
-						IHM_INS.display("Suppression de " + label + " dans la table Vehicle");
+						logger.info("Suppression de " + numberPlate + " dans la table Vehicule");
+						IHM_INS.display("Suppression de " + numberPlate + " dans la table Vehicule");
 					}
 					// Si au moins une vente est liée au véhicule , alors impossible de le supprimer, on
 					// renverra le message suivant
@@ -111,7 +114,7 @@ public class VehicleDAOImpl implements IVehicleDAO {
 	}
 
 	@Override
-	public void update(String oldLabel, String newLabel) {
+	public void update(String oldnumberPlate, String newNumberPlate) {
 		// TODO Auto-generated method stub
 	}
 
