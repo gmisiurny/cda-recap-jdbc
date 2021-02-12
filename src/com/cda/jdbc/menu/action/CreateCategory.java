@@ -18,7 +18,7 @@ final class CreateCategory extends Action {
 
 	@Override
 	public boolean execute() {
-		IHM_INS.display("Comment s'appelle la catégorie de la pièce à ajouter ?");
+		IHM_INS.display("Comment s'appelle la catégorie à ajouter ?");
 		String label = Ihm.IHM_INS.readWord();
 		Category category = new Category(label);
 		this.categoryDAO.save(category);

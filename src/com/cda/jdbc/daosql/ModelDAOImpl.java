@@ -166,7 +166,22 @@ public class ModelDAOImpl implements IModelDAO {
 
 	@Override
 	public int getId(String label) {
-		// TODO Auto-generated method stub
-		return 0;
+		int idModel=-1;
+		Connection c = MyConnection.getConnection();
+		if (c != null) {
+			try {
+				PreparedStatement statement = c.prepareStatement("SELECT * FROM Model WHERE label = ?;");
+				statement.setString(1, label);
+				ResultSet result = statement.executeQuery();
+				logger.info("Récupération de l'id du modèle");
+				if (result.next()) {
+					idModel=result.getInt(1);
+				}
+			} catch (SQLException e) {
+				logger.error("erreur "+e);
+				e.printStackTrace();
+			}
+		}
+		return idModel;
 	}
 }
