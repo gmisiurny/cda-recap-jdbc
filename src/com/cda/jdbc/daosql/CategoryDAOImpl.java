@@ -9,25 +9,21 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.cda.jdbc.dao.ICategoryDAO;
 import com.cda.jdbc.data.Category;
 
-
-
-public class CategoryDAOImpl implements ICategoryDAO{
+public class CategoryDAOImpl implements ICategoryDAO {
 	private static final Logger logger = LoggerFactory.getLogger(CategoryDAOImpl.class);
-	
+
 	@Override
 	public Category save(Category category) {
 		Connection c = MyConnection.getConnection();
 		if (c != null) {
 			try {
 				PreparedStatement ps = c.prepareStatement("SELECT * FROM Category WHERE label = ?");
-				ps.setString(1,category.getLabelCategory());
+				ps.setString(1, category.getLabelCategory());
 				ResultSet result = ps.executeQuery();
 				if (result.next() == false) {
 					ps = c.prepareStatement("INSERT INTO Category (label) VALUES (?); ",
@@ -45,7 +41,7 @@ public class CategoryDAOImpl implements ICategoryDAO{
 					IHM_INS.display("Catégorie déjà dans la BDD");
 				}
 			} catch (SQLException e) {
-				logger.error("erreur "+e);
+				logger.error("erreur " + e);
 				e.printStackTrace();
 			}
 		}
@@ -65,7 +61,7 @@ public class CategoryDAOImpl implements ICategoryDAO{
 					category.add(new Category(result.getInt("id"), result.getString("label")));
 				}
 			} catch (SQLException e) {
-				logger.error("erreur "+e);
+				logger.error("erreur " + e);
 				e.printStackTrace();
 			}
 		}
@@ -78,7 +74,7 @@ public class CategoryDAOImpl implements ICategoryDAO{
 		if (c != null) {
 			try {
 				PreparedStatement ps = c.prepareStatement("SELECT * FROM Category WHERE label = ?;");
-				ps.setString(1,nomOuID);
+				ps.setString(1, nomOuID);
 				ResultSet result = ps.executeQuery();
 				if (result.next() == false) {
 					logger.warn("La catégorie " + nomOuID + " n'existe pas");
@@ -91,16 +87,17 @@ public class CategoryDAOImpl implements ICategoryDAO{
 						logger.info("Suppression de " + nomOuID + " dans la table Category");
 						IHM_INS.display("Suppression de " + nomOuID + " dans la table Category");
 					}
-					// Si au moins une pièce est liée à la catégorie , alors impossible de la supprimer, on
+					// Si au moins une pièce est liée à la catégorie , alors impossible de la
+					// supprimer, on
 					// renverra le message suivant
 					catch (SQLIntegrityConstraintViolationException sqle) {
-						logger.error("erreur "+sqle);
+						logger.error("erreur " + sqle);
 						IHM_INS.display(
 								"Impossible de supprimer la catégorie, veuillez avant tout supprimer les pièces qui y sont associées");
 					}
 				}
 			} catch (SQLException e) {
-				logger.error("erreur "+e);
+				logger.error("erreur " + e);
 				e.printStackTrace();
 			}
 		}
@@ -112,34 +109,37 @@ public class CategoryDAOImpl implements ICategoryDAO{
 		if (c != null) {
 			try {
 				PreparedStatement ps = c.prepareStatement("SELECT * FROM Category WHERE label = ?;");
-				ps.setString(1,oldLabel);
+				PreparedStatement ps2 = c.prepareStatement("SELECT * FROM Category WHERE label = ?;");
+				ps.setString(1, oldLabel);
 				ResultSet result = ps.executeQuery();
-				if (result.next() == false) {
+				ps2.setString(1, newLabel);
+				ResultSet result2 = ps2.executeQuery();
+				if (!result.next()) {
 					logger.warn("La catégorie " + oldLabel + " n'existe pas");
 					IHM_INS.display("La catégorie " + oldLabel + " n'existe pas");
+				} else if (result2.next()) {
+					logger.warn("La catégorie " + newLabel + " existe déjà");
+					IHM_INS.display("La catégorie " + newLabel + " existe déjà");
 				} else {
 					try {
 						ps = c.prepareStatement("UPDATE Category SET label =? WHERE label=?;");
 						ps.setString(1, newLabel);
 						ps.setString(2, oldLabel);
 						ps.executeUpdate();
-						logger.info("Modification de " + oldLabel + " en "+newLabel+" dans la table Category");
-						IHM_INS.display("Modification de " + oldLabel + " en "+newLabel+" dans la table Category");
-					}
-					// Si au moins une pièce est liée à la catégorie , alors impossible de la supprimer, on
-					// renverra le message suivant
-					catch (SQLIntegrityConstraintViolationException sqle) {
-						logger.error("erreur "+sqle);
+						logger.info("Modification de " + oldLabel + " en " + newLabel + " dans la table Category");
+						IHM_INS.display("Modification de " + oldLabel + " en " + newLabel + " dans la table Category");
+					} catch (SQLIntegrityConstraintViolationException sqle) {
+						logger.error("erreur " + sqle);
 						IHM_INS.display(
 								"Impossible de supprimer la catégorie, veuillez avant tout supprimer les pièces qui y sont associées");
 					}
 				}
 			} catch (SQLException e) {
-				logger.error("erreur "+e);
+				logger.error("erreur " + e);
 				e.printStackTrace();
 			}
 		}
-				
+
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public class CategoryDAOImpl implements ICategoryDAO{
 					category.setLabelCategory(resultat.getString(2));
 					return category;
 				}
-			
+
 			} catch (SQLException e) {
 				logger.error("erreur " + e);
 				IHM_INS.display("Erreur lors de l'affichage des marques");

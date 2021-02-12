@@ -4,9 +4,7 @@ public class Brand {
 	private int idBrand;
 	private String label;
 	
-	public Brand() {
-		
-	}
+	public Brand() {}
 	
 	public Brand(String label) {
 		this.label = label;

@@ -107,11 +107,17 @@ public class BrandDAOImpl implements IBrandDAO {
 		if (c != null) {
 			try {
 				PreparedStatement ps = c.prepareStatement("SELECT * FROM Brand WHERE label = ?;");
+				PreparedStatement ps2 = c.prepareStatement("SELECT * FROM Brand WHERE label = ?;");
 				ps.setString(1, oldLabel);
 				ResultSet result = ps.executeQuery();
+				ps2.setString(1, newLabel);
+				ResultSet result2 = ps2.executeQuery();
 				if (!result.next()) {
 					logger.warn("La marque " + oldLabel + " n'existe pas");
 					IHM_INS.display("La marque " + oldLabel + " n'existe pas");
+				} else if (result2.next()) {
+					logger.warn("La marque " + newLabel + " existe déjà");
+					IHM_INS.display("La marque " + newLabel + " existe déjà");
 				} else {
 					try {
 						ps = c.prepareStatement("UPDATE Brand SET label =? WHERE label=?;");
