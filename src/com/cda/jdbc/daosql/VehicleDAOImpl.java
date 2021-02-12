@@ -7,12 +7,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.Year;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cda.jdbc.dao.IVehicleDAO;
+import com.cda.jdbc.data.Category;
 import com.cda.jdbc.data.Vehicle;
+
 
 public class VehicleDAOImpl implements IVehicleDAO {
 	private static final Logger logger = LoggerFactory.getLogger(VehicleDAOImpl.class);
@@ -25,8 +28,30 @@ public class VehicleDAOImpl implements IVehicleDAO {
 
 	@Override
 	public Vehicle findByName(String label) {
-		// TODO Auto-generated method stub
-		return null;
+		Connection c = MyConnection.getConnection();
+		Vehicle vehicle = new Vehicle();
+		if (c != null) {
+			try {
+				PreparedStatement ps = c.prepareStatement("SELECT * FROM Vehicle WHERE label=?;",
+						PreparedStatement.RETURN_GENERATED_KEYS);
+				ps.setString(1, label);
+				ResultSet resultat = ps.executeQuery();
+				if (resultat.next()) {
+					logger.info("Vehicle consultée");
+					vehicle.setNumberPlate(resultat.getString(1));
+					vehicle.setYearProduct(resultat.getInt(2));
+					vehicle.setIdModel(resultat.getInt(3));
+					vehicle.setIdBrand(resultat.getInt(4));
+					
+					return vehicle;
+				}
+			
+			} catch (SQLException e) {
+				logger.error("erreur " + e);
+				IHM_INS.display("Erreur lors de l'affichage des marques");
+			}
+		}
+		return vehicle;
 	}
 
 	@Override
@@ -71,8 +96,7 @@ public class VehicleDAOImpl implements IVehicleDAO {
 
 	@Override
 	public int getId(String nom) {
-		
-		return 0;
+		return -1;
 	}
 
 }

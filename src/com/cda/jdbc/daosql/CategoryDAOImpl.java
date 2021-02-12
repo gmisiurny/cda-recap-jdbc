@@ -175,7 +175,22 @@ public class CategoryDAOImpl implements ICategoryDAO{
 
 	@Override
 	public int getId(String label) {
-		// TODO Auto-generated method stub
-		return 0;
+		int idCategory=-1;
+		Connection c = MyConnection.getConnection();
+		if (c != null) {
+			try {
+				PreparedStatement statement = c.prepareStatement("SELECT * FROM Category WHERE label = ?;");
+				statement.setString(1, label);
+				ResultSet result = statement.executeQuery();
+				logger.info("Récupération de l'id de la catégorie");
+				if (result.next()) {
+					idCategory=result.getInt(1);
+				}
+			} catch (SQLException e) {
+				logger.error("erreur "+e);
+				e.printStackTrace();
+			}
+		}
+		return idCategory;
 	}
 }

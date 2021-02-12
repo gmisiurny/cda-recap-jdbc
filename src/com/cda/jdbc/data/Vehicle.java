@@ -4,7 +4,7 @@ import java.time.Year;
 
 public class Vehicle {
 	private String numberPlate;
-	private Year yearProduct;
+	private int yearProduct;
 	private int idModel;
 	private int idBrand;
 	
@@ -12,7 +12,7 @@ public class Vehicle {
 		
 	}
 	
-	public Vehicle(String pNumberPlate, Year pYearProduct,int pIdModel,int pIdBrand) {
+	public Vehicle(String pNumberPlate, int pYearProduct,int pIdModel,int pIdBrand) {
 		this.numberPlate = pNumberPlate;
 		this.yearProduct = pYearProduct;
 		this.idModel = pIdModel;
@@ -23,11 +23,11 @@ public class Vehicle {
 		return numberPlate;
 	}
 
-	public Year getYearProduct() {
+	public int getYearProduct() {
 		return yearProduct;
 	}
 
-	public void setYearProduct(Year yearProduct) {
+	public void setYearProduct(int yearProduct) {
 		this.yearProduct = yearProduct;
 	}
 
