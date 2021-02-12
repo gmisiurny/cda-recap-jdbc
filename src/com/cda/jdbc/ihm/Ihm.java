@@ -31,6 +31,25 @@ public class Ihm {
 		return input;
 	}
 	
+	public float readFloatNb() throws WrongInputException {
+		System.out.print("< ");
+		float input;
+		try {
+			input = this.scanner.nextFloat();
+		} catch (NumberFormatException | InputMismatchException e) {
+			this.scanner.nextLine();
+			throw new WrongInputException();
+		}		
+		if (this.scanner.hasNextLine()) {
+			String comm = this.scanner.nextLine();
+			if (this.displayComment) {
+				System.out.print(comm);
+			}
+		}
+		System.out.println();
+		return input;
+	}
+	
 	public String readWord() {
 		System.out.print("< ");
 		String saisie = this.scanner.next();
