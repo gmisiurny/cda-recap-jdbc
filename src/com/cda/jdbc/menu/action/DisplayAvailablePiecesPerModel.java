@@ -3,7 +3,7 @@ package com.cda.jdbc.menu.action;
 import static com.cda.jdbc.ihm.Ihm.IHM_INS;
 
 final class DisplayAvailablePiecesPerModel extends Action {
-	private static final int ID = 21;
+	private static final int ID = 22;
 	private static final String DESC = "Lister le nombre et la somme totale des pièces disponibles (pas encore vendues) par modèle de véhicule.";
 
 	protected DisplayAvailablePiecesPerModel() {

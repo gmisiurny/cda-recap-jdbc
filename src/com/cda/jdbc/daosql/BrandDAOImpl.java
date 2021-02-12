@@ -166,7 +166,22 @@ public class BrandDAOImpl implements IBrandDAO {
 
 	@Override
 	public int getId(String label) {
-		// TODO Auto-generated method stub
-		return 0;
+		int idBrand=-1;
+		Connection c = MyConnection.getConnection();
+		if (c != null) {
+			try {
+				PreparedStatement statement = c.prepareStatement("SELECT * FROM Brand WHERE label = ?;");
+				statement.setString(1, label);
+				ResultSet result = statement.executeQuery();
+				logger.info("Récupération de l'id de la marque");
+				if (result.next()) {
+					idBrand=result.getInt(1);
+				}
+			} catch (SQLException e) {
+				logger.error("erreur "+e);
+				e.printStackTrace();
+			}
+		}
+		return idBrand;
 	}
 }

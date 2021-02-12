@@ -1,6 +1,5 @@
 package com.cda.jdbc.data;
 
-import java.time.Year;
 
 public class Vehicle {
 	private String numberPlate;

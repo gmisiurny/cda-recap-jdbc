@@ -7,13 +7,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.time.Year;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cda.jdbc.dao.IVehicleDAO;
-import com.cda.jdbc.data.Category;
 import com.cda.jdbc.data.Vehicle;
 
 
@@ -21,8 +19,34 @@ public class VehicleDAOImpl implements IVehicleDAO {
 	private static final Logger logger = LoggerFactory.getLogger(VehicleDAOImpl.class);
 
 	@Override
-	public Vehicle save(Vehicle o) {
-		// TODO Auto-generated method stub
+	public Vehicle save(Vehicle vehicle) {
+		Connection c = MyConnection.getConnection();
+		if (c != null) {
+			try {
+				PreparedStatement ps = c.prepareStatement("SELECT * FROM Vehicle WHERE label = ?");
+				ps.setString(1,vehicle.getNumberPlate());
+				ResultSet result = ps.executeQuery();
+				if (!result.next()) {
+					ps = c.prepareStatement("INSERT INTO Vehicle VALUES (?,?,?,?); ");
+					ps.setString(1, vehicle.getNumberPlate());
+					ps.setInt(2, vehicle.getYearProduct());
+					ps.setInt(3, vehicle.getIdModel());
+					ps.setInt(4, vehicle.getIdBrand());
+					ps.executeUpdate();
+					ResultSet resultat = ps.getGeneratedKeys();
+					if (resultat.next()) {
+						logger.info("Véhicule créé");
+						return vehicle;
+					}
+				} else {
+					logger.warn("Véhicule déjà dans la BDD");
+					IHM_INS.display("Véhicule déjà dans la BDD");
+				}
+			} catch (SQLException e) {
+				logger.error("erreur "+e);
+				e.printStackTrace();
+			}
+		}
 		return null;
 	}
 
@@ -42,7 +66,6 @@ public class VehicleDAOImpl implements IVehicleDAO {
 					vehicle.setYearProduct(resultat.getInt(2));
 					vehicle.setIdModel(resultat.getInt(3));
 					vehicle.setIdBrand(resultat.getInt(4));
-					
 					return vehicle;
 				}
 			
@@ -91,7 +114,6 @@ public class VehicleDAOImpl implements IVehicleDAO {
 	@Override
 	public void update(String oldLabel, String newLabel) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
