@@ -20,7 +20,7 @@ final class ReadBrand extends Action {
 
 	@Override
 	public boolean execute() {
-		IHM_INS.display("Comment s'appelle le modèle à consulter ?");
+		IHM_INS.display("Comment s'appelle la marque à consulter ?");
 		String label = Ihm.IHM_INS.readWord();		
 		System.out.println((this.brandDAO.findByName(label)));
 		return Boolean.TRUE;
