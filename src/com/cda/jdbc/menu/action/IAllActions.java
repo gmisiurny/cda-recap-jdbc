@@ -27,5 +27,4 @@ public interface IAllActions {
 	public static final DisplayAvailablePiecesPerModel DISPLAY_AVAILABLE_PIECES_PER_MODEL = new DisplayAvailablePiecesPerModel();
 	public static final AnnualSells ANNUAL_SELLS = new AnnualSells();
 	public static final MostRecentVehicules MOST_RECENT_VEHICULES = new MostRecentVehicules();
-	
 }
