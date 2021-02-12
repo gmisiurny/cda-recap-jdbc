@@ -6,11 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.cda.jdbc.dao.IDAO;
+import com.cda.jdbc.dao.IReferenceDAO;
 import com.cda.jdbc.data.Reference;
 import com.cda.jdbc.ihm.Ihm;
 
-public class RefDAOImpl implements IDAO<Reference> {
+public class RefDAOImpl implements IReferenceDAO {
 	private static final Logger logger = LoggerFactory.getLogger(RefDAOImpl.class);
 	
 	@Override
@@ -38,13 +38,13 @@ public class RefDAOImpl implements IDAO<Reference> {
 	}
 
 	@Override
-	public int getId(String label) {
+	public int getId(String reference) {
 		Connection c = MyConnection.getConnection();
 		int id = -1;
 		if (c != null) {
 			try {
-				PreparedStatement ps = c.prepareStatement("SELECT id FROM Reference WHERE label=?;");
-				ps.setString(1, label);
+				PreparedStatement ps = c.prepareStatement("SELECT id FROM Reference WHERE reference=?;");
+				ps.setString(1, reference);
 				ResultSet resultat = ps.executeQuery();
 				if (resultat.next()) {
 					logger.info("Reference récupérée");
@@ -56,5 +56,28 @@ public class RefDAOImpl implements IDAO<Reference> {
 			}
 		}
 		return id;
+	}
+
+	@Override
+	public boolean isInDatabase(String label) {
+		boolean isIn = false;
+		Connection c = MyConnection.getConnection();
+		if (c != null) {
+			try {
+				PreparedStatement ps = c.prepareStatement("SELECT * FROM Reference WHERE reference=?;");
+				ps.setString(1, label);
+				ResultSet resultat = ps.executeQuery();
+				if (resultat.next()) {
+					logger.info("La référence existe déjà en BDD");
+					isIn = true;
+				} else {
+					Ihm.IHM_INS.display("Cette référence n'existe pas");
+				}
+			} catch (SQLException e) {
+				logger.error("Erreur " + e);
+				Ihm.IHM_INS.display("Erreur lors de la vérification de la présence de la référence");
+			}
+		}
+		return isIn;
 	}
 }

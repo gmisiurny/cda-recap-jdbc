@@ -68,7 +68,6 @@ public class VehicleDAOImpl implements IVehicleDAO {
 					vehicle.setIdBrand(resultat.getInt(4));
 					return vehicle;
 				}
-			
 			} catch (SQLException e) {
 				logger.error("erreur " + e);
 				IHM_INS.display("Erreur lors de l'affichage des marques");

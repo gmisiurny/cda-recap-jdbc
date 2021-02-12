@@ -128,8 +128,7 @@ public class ModelDAOImpl implements IModelDAO {
 						IHM_INS.display("Modification de " + oldLabel + " en " + newLabel + " dans la table Model");
 					} catch (SQLIntegrityConstraintViolationException sqle) {
 						logger.error("Erreur " + sqle);
-						IHM_INS.display(
-								"Impossible de supprimer le model, veuillez avant tout supprimer les véhicules qui y sont associés");
+						IHM_INS.display("Erreur lors de l'édition du modele en BDD");
 					}
 				}
 			} catch (SQLException e) {
