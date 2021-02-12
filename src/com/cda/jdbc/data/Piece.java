@@ -11,12 +11,15 @@ public class Piece {
 	
 	public Piece(String label, float price, int idCategory, int idReference) {
 		this.label = label;
+		this.price = price;
 		this.idCategory = idCategory;
 		this.idReference = idReference;
 	}
 	
 	public Piece(int idPiece, String label, float price, int idCategory, int idReference) {
 		this.idPiece = idPiece;
+		this.label = label;
+		this.price = price;
 		this.idCategory = idCategory;
 		this.idReference = idReference;
 	}
@@ -59,5 +62,9 @@ public class Piece {
 
 	public void setIdReference(int idReference) {
 		this.idReference = idReference;
+	}
+	
+	public String toString() {
+		return "Id: " + this.idPiece + "\nLabel: " + this.label + "\nPrix: " + this.price + "\nId de la categorie: " + this.idCategory + "\nId de la référence: " + this.idReference;
 	}
 }

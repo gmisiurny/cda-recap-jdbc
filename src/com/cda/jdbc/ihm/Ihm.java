@@ -63,6 +63,19 @@ public class Ihm {
 		return saisie;
 	}
 	
+	public String readSentence() {
+		System.out.print("< ");
+		String saisie = this.scanner.nextLine();
+//		if (this.scanner.hasNextLine()) {
+//			String vComm = this.scanner.nextLine();
+//			if (this.displayComment) {
+//				System.out.print(vComm);
+//			}
+//		}
+		System.out.println();
+		return saisie;
+	}
+	
 	public void display(String message) {
 		display(message, true);
 	}

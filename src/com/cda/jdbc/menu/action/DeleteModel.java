@@ -19,7 +19,7 @@ final class DeleteModel extends Action {
 	@Override
 	public boolean execute() {
 		IHM_INS.display("Comment s'appelle le modèle à supprimer ?");
-		String label = Ihm.IHM_INS.readWord();
+		String label = IHM_INS.readWord();
 		this.modelDAO.remove(label);
 		return Boolean.TRUE;
 	}

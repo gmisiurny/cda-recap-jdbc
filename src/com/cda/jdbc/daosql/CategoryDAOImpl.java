@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cda.jdbc.dao.ICategoryDAO;
 import com.cda.jdbc.data.Category;
+import com.cda.jdbc.ihm.Ihm;
 
 
 
@@ -175,7 +176,7 @@ public class CategoryDAOImpl implements ICategoryDAO{
 
 	@Override
 	public int getId(String label) {
-		int idCategory=-1;
+		int idCategory = -1;
 		Connection c = MyConnection.getConnection();
 		if (c != null) {
 			try {
@@ -184,7 +185,7 @@ public class CategoryDAOImpl implements ICategoryDAO{
 				ResultSet result = statement.executeQuery();
 				logger.info("Récupération de l'id de la catégorie");
 				if (result.next()) {
-					idCategory=result.getInt(1);
+					idCategory = result.getInt(1);
 				}
 			} catch (SQLException e) {
 				logger.error("erreur "+e);
@@ -192,5 +193,28 @@ public class CategoryDAOImpl implements ICategoryDAO{
 			}
 		}
 		return idCategory;
+	}
+
+	@Override
+	public boolean isInDatabase(String label) {
+		boolean isIn = false;
+		Connection c = MyConnection.getConnection();
+		if (c != null) {
+			try {
+				PreparedStatement ps = c.prepareStatement("SELECT * FROM Category WHERE label=?;");
+				ps.setString(1, label);
+				ResultSet resultat = ps.executeQuery();
+				if (resultat.next()) {
+					logger.info("La catégorie existe en BDD");
+					isIn = true;
+				} else {
+					Ihm.IHM_INS.display("Cette catégorie n'existe pas");
+				}
+			} catch (SQLException e) {
+				logger.error("Erreur " + e);
+				Ihm.IHM_INS.display("Erreur lors de la vérification de la présence de la catégorie");
+			}
+		}
+		return isIn;		
 	}
 }
