@@ -29,7 +29,7 @@ public class CategoryDAOImpl implements ICategoryDAO{
 				PreparedStatement ps = c.prepareStatement("SELECT * FROM Category WHERE label = ?");
 				ps.setString(1,category.getLabelCategory());
 				ResultSet result = ps.executeQuery();
-				if (result.next() == false) {
+				if (!result.next()) {
 					ps = c.prepareStatement("INSERT INTO Category (label) VALUES (?); ",
 							PreparedStatement.RETURN_GENERATED_KEYS);
 					ps.setString(1, category.getLabelCategory());
@@ -73,23 +73,23 @@ public class CategoryDAOImpl implements ICategoryDAO{
 	}
 
 	@Override
-	public void remove(String nomOuID) {
+	public void remove(String label) {
 		Connection c = MyConnection.getConnection();
 		if (c != null) {
 			try {
 				PreparedStatement ps = c.prepareStatement("SELECT * FROM Category WHERE label = ?;");
-				ps.setString(1,nomOuID);
+				ps.setString(1,label);
 				ResultSet result = ps.executeQuery();
-				if (result.next() == false) {
-					logger.warn("La catégorie " + nomOuID + " n'existe pas");
-					IHM_INS.display("La catégorie " + nomOuID + " n'existe pas");
+				if (!result.next()) {
+					logger.warn("La catégorie " + label + " n'existe pas");
+					IHM_INS.display("La catégorie " + label + " n'existe pas");
 				} else {
 					try {
 						ps = c.prepareStatement("DELETE FROM Category WHERE label =?;");
-						ps.setString(1, nomOuID);
+						ps.setString(1, label);
 						ps.executeUpdate();
-						logger.info("Suppression de " + nomOuID + " dans la table Category");
-						IHM_INS.display("Suppression de " + nomOuID + " dans la table Category");
+						logger.info("Suppression de " + label + " dans la table Category");
+						IHM_INS.display("Suppression de " + label + " dans la table Category");
 					}
 					// Si au moins une pièce est liée à la catégorie , alors impossible de la supprimer, on
 					// renverra le message suivant
@@ -117,10 +117,10 @@ public class CategoryDAOImpl implements ICategoryDAO{
 				ResultSet result = ps.executeQuery();
 				ps2.setString(1,newLabel);
 				ResultSet result2 = ps2.executeQuery();
-				if (result.next() == false) {
+				if (!result.next()) {
 					logger.warn("La catégorie " + oldLabel + " n'existe pas");
 					IHM_INS.display("La catégorie " + oldLabel + " n'existe pas");
-				}else if(result2.next()!=false){
+				}else if(result2.next()){
 					logger.warn("La catégorie " + newLabel + " existe déjà");
 					IHM_INS.display("La catégorie " + newLabel + " existe déjà");
 				} else {
