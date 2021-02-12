@@ -31,6 +31,6 @@ public class Category {
 	}
 
 	public String toString() {
-		return "[id=" + idCategory + ", label=" + labelCategory + "]";
+		return "[Id=" + idCategory + "\nLabel=" + labelCategory + "]";
 	}
 }

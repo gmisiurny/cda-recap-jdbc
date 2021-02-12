@@ -49,4 +49,8 @@ public class Vehicle {
 	public void setNumberPlate(String numberPlate) {
 		this.numberPlate = numberPlate;
 	}
+	
+	public String toString() {
+		return "[Plaque d'immatriculation= " + numberPlate + "\nAnnée de Production= " + yearProduct + "\nId du modèle= " + idModel + "\nId de la marque= " + idBrand + "]";
+	}
 }
