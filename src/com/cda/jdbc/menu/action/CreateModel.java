@@ -1,9 +1,7 @@
 package com.cda.jdbc.menu.action;
 
 import static com.cda.jdbc.ihm.Ihm.IHM_INS;
-
 import com.cda.jdbc.dao.IDAO;
-import com.cda.jdbc.data.Brand;
 import com.cda.jdbc.data.Model;
 import com.cda.jdbc.ihm.Ihm;
 

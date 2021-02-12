@@ -30,4 +30,8 @@ public class Model {
 	public void setLabel(String label) {
 		this.label = label;
 	}	
+	
+	public String toString() {
+		return "Id: " + this.idModel + "\nModel: " + this.label;
+	}
 }

@@ -172,4 +172,10 @@ public class CategoryDAOImpl implements ICategoryDAO{
 		}
 		return category;
 	}
+
+	@Override
+	public int getId(String label) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

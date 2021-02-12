@@ -11,36 +11,36 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.cda.jdbc.dao.IBrandDAO;
-import com.cda.jdbc.data.Brand;
+import com.cda.jdbc.dao.IModelDAO;
+import com.cda.jdbc.data.Model;
 import com.cda.jdbc.ihm.Ihm;
 
-public class BrandDAOImpl implements IBrandDAO {
-	private static final Logger logger = LoggerFactory.getLogger(BrandDAOImpl.class);
+public class ModelDAOImpl implements IModelDAO {
+	private static final Logger logger = LoggerFactory.getLogger(ModelDAOImpl.class);
 
 	@Override
-	public Brand save(Brand brand) {
+	public Model save(Model model) {
 		Connection c = MyConnection.getConnection();
 		if (c != null) {
 			try {
-				String request = "SELECT * FROM Brand WHERE label=?;";
+				String request = "SELECT * FROM Model WHERE label=?;";
 				PreparedStatement prepStatement = c.prepareStatement(request, PreparedStatement.RETURN_GENERATED_KEYS);
-				prepStatement.setString(1, brand.getLabel());
+				prepStatement.setString(1, model.getLabel());
 				ResultSet result = prepStatement.executeQuery();
-				if (result.next() == false) {
-					PreparedStatement ps = c.prepareStatement("insert into Brand (label) values (?); ",
+				if (!result.next()) {
+					PreparedStatement ps = c.prepareStatement("INSERT INTO Model (label) values (?); ",
 							PreparedStatement.RETURN_GENERATED_KEYS);
-					ps.setString(1, brand.getLabel());
+					ps.setString(1, model.getLabel());
 					ps.executeUpdate();
 					ResultSet resultat = ps.getGeneratedKeys();
 					if (resultat.next()) {
-						logger.info("Marque créée !");
-						brand.setId(resultat.getInt(1));
-						return brand;
+						logger.info("Modele créée !");
+						model.setIdModel(resultat.getInt(1));
+						return model;
 					}
 				} else {
-					logger.warn("Marque déjà dans la BDD");
-					Ihm.IHM_INS.display("Marque déjà dans la BDD");
+					logger.warn("Modele déjà dans la BDD");
+					Ihm.IHM_INS.display("Modele déjà dans la BDD");
 				}
 			} catch (SQLException e) {
 				logger.error("erreur " + e);
@@ -51,23 +51,23 @@ public class BrandDAOImpl implements IBrandDAO {
 	}
 
 	@Override
-	public List<Brand> getAll() {
-		List<Brand> brand = new ArrayList<>();
+	public List<Model> getAll() {
+		List<Model> model = new ArrayList<>();
 		Connection c = MyConnection.getConnection();
 		if (c != null) {
 			try {
-				PreparedStatement ps = c.prepareStatement("SELECT * FROM Brand");
+				PreparedStatement ps = c.prepareStatement("SELECT * FROM Model");
 				ResultSet result = ps.executeQuery();
-				logger.info("Ajout des marques à la liste");
+				logger.info("Ajout des models à la liste");
 				while (result.next()) {
-					brand.add(new Brand(result.getInt("id"), result.getString("label")));
+					model.add(new Model(result.getInt("id"), result.getString("label")));
 				}
 			} catch (SQLException e) {
 				logger.error("Erreur " + e);
 				IHM_INS.display("Une erreur est survenue !");
 			}
 		}
-		return brand;
+		return model;
 	}
 
 	@Override
@@ -75,23 +75,23 @@ public class BrandDAOImpl implements IBrandDAO {
 		Connection c = MyConnection.getConnection();
 		if (c != null) {
 			try {
-				PreparedStatement ps = c.prepareStatement("SELECT * FROM Brand WHERE label = ?;");
+				PreparedStatement ps = c.prepareStatement("SELECT * FROM Model WHERE label = ?;");
 				ps.setString(1, label);
 				ResultSet result = ps.executeQuery();
 				if (!result.next()) {
 					logger.warn("La catégorie " + label + " n'existe pas");
-					IHM_INS.display("La catégorie " + label + " n'existe pas");
+					IHM_INS.display("Le model " + label + " n'existe pas");
 				} else {
 					try {
-						ps = c.prepareStatement("DELETE FROM Brand WHERE label =?;");
+						ps = c.prepareStatement("DELETE FROM Model WHERE label =?;");
 						ps.setString(1, label);
 						ps.executeUpdate();
-						logger.info("Suppression de la marque " + label + " dans la table Brand");
-						IHM_INS.display("Suppression de la marque " + label + " dans la table Brand");
+						logger.info("Suppression du model " + label + " dans la table Model");
+						IHM_INS.display("Suppression du model " + label + " dans la table Model");
 					} catch (SQLIntegrityConstraintViolationException sqle) {
 						logger.error("erreur " + sqle);
 						IHM_INS.display(
-								"Impossible de supprimer la marque, veuillez avant tout supprimer les véhicules qui y sont associés");
+								"Impossible de supprimer le model, veuillez avant tout supprimer les véhicules qui y sont associés");
 					}
 				}
 			} catch (SQLException e) {
@@ -106,30 +106,30 @@ public class BrandDAOImpl implements IBrandDAO {
 		Connection c = MyConnection.getConnection();
 		if (c != null) {
 			try {
-				PreparedStatement ps = c.prepareStatement("SELECT * FROM Brand WHERE label = ?;");
-				PreparedStatement ps2 = c.prepareStatement("SELECT * FROM Brand WHERE label = ?;");
+				PreparedStatement ps = c.prepareStatement("SELECT * FROM Model WHERE label = ?;");
+				PreparedStatement ps2 = c.prepareStatement("SELECT * FROM Model WHERE label = ?;");
 				ps.setString(1, oldLabel);
 				ResultSet result = ps.executeQuery();
 				ps2.setString(1, newLabel);
 				ResultSet result2 = ps2.executeQuery();
 				if (!result.next()) {
-					logger.warn("La marque " + oldLabel + " n'existe pas");
-					IHM_INS.display("La marque " + oldLabel + " n'existe pas");
+					logger.warn("Le model " + oldLabel + " n'existe pas");
+					IHM_INS.display("Le model " + oldLabel + " n'existe pas");
 				} else if (result2.next()) {
-					logger.warn("La marque " + newLabel + " existe déjà");
-					IHM_INS.display("La marque " + newLabel + " existe déjà");
+					logger.warn("Le model " + newLabel + " existe déjà");
+					IHM_INS.display("Le model " + newLabel + " existe déjà");
 				} else {
 					try {
-						ps = c.prepareStatement("UPDATE Brand SET label =? WHERE label=?;");
+						ps = c.prepareStatement("UPDATE Model SET label =? WHERE label=?;");
 						ps.setString(1, newLabel);
 						ps.setString(2, oldLabel);
 						ps.executeUpdate();
-						logger.info("Modification de " + oldLabel + " en " + newLabel + " dans la table Brand");
-						IHM_INS.display("Modification de " + oldLabel + " en " + newLabel + " dans la table Brand");
+						logger.info("Modification de " + oldLabel + " en " + newLabel + " dans la table Model");
+						IHM_INS.display("Modification de " + oldLabel + " en " + newLabel + " dans la table Model");
 					} catch (SQLIntegrityConstraintViolationException sqle) {
 						logger.error("Erreur " + sqle);
 						IHM_INS.display(
-								"Impossible de supprimer la marque, veuillez avant tout supprimer les véhicules qui y sont associés");
+								"Impossible de supprimer le model, veuillez avant tout supprimer les véhicules qui y sont associés");
 					}
 				}
 			} catch (SQLException e) {
@@ -140,28 +140,28 @@ public class BrandDAOImpl implements IBrandDAO {
 	}
 
 	@Override
-	public Brand findByName(String label) {
+	public Model findByName(String label) {
 		Connection c = MyConnection.getConnection();
-		Brand brand = new Brand();
+		Model model = new Model();
 		if (c != null) {
 			try {
-				PreparedStatement ps = c.prepareStatement("SELECT * FROM Brand WHERE label=?;",
+				PreparedStatement ps = c.prepareStatement("SELECT * FROM Model WHERE label=?;",
 						PreparedStatement.RETURN_GENERATED_KEYS);
 				ps.setString(1, label);
 				ResultSet resultat = ps.executeQuery();
 				if (resultat.next()) {
-					logger.info("Marque consultée");
-					brand.setId(resultat.getInt(1));
-					brand.setLabel(resultat.getString(2));
-					return brand;
+					logger.info("Model consulté");
+					model.setIdModel(resultat.getInt(1));
+					model.setLabel(resultat.getString(2));
+					return model;
 				}
 
 			} catch (SQLException e) {
-				logger.error("erreur " + e);
-				Ihm.IHM_INS.display("Erreur lors de l'affichage des marques");
+				logger.error("Erreur " + e);
+				Ihm.IHM_INS.display("Erreur lors de l'affichage des model");
 			}
 		}
-		return brand;
+		return model;
 	}
 
 	@Override

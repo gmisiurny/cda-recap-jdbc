@@ -19,7 +19,7 @@ final class UpdateBrand extends Action {
 
 	@Override
 	public boolean execute() {
-		IHM_INS.display("Comment s'appelle le modèle à éditer ?");
+		IHM_INS.display("Comment s'appelle la marque à éditer ?");
 		String oldLabel = Ihm.IHM_INS.readWord();
 		IHM_INS.display("Comment voulez-vous la renommer ?");
 		String newLabel = Ihm.IHM_INS.readWord();

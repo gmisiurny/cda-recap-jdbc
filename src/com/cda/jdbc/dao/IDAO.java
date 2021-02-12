@@ -5,4 +5,5 @@ public interface IDAO<T> {
 	T findByName(String label);
 	void remove(String label);
 	void update(String oldLabel, String newLabel);
+	int getId(String label);
 }
