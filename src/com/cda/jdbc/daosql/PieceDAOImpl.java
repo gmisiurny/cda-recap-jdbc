@@ -185,93 +185,99 @@ public class PieceDAOImpl implements IPieceDAO {
 	}
 
 	@Override
-	public void listAvailablePiecePerModel() {
+	public void listAvailablePiecePerModel(String choice) {
 		String request = "SELECT m.label, p.label, r.quantity, p.price, p.price*r.quantity total\r\n"
 				+ "FROM Piece p\r\n" + "JOIN Reference r ON p.idReference = r.idReference\r\n"
 				+ "JOIN Piece_Vehicule pv ON p.idPiece = pv.idPiece \r\n"
 				+ "JOIN Vehicule v ON pv.numberPlate = v.numberPlate \r\n" + "JOIN Model m ON m.idModel = v.idModel;";
 		Connection c = MyConnection.getConnection();
 		if (c != null) {
-			try {
-				PreparedStatement ps = c.prepareStatement(request);
-				ResultSet resultat = ps.executeQuery();
-				while (resultat.next()) {
-					String modelLabel = resultat.getString("m.label");
-					String pieceLabel = resultat.getString("p.label");
-					int quantity = resultat.getInt("r.quantity");
-					float price = resultat.getFloat("p.price");
-					float total = resultat.getFloat("total");
-					String res = "\nModele: " + modelLabel + "\nPièce: " + pieceLabel + "\nQuantité: " + quantity
-							+ "\nPrix: " + price + "\nTotal: " + total;
-					IHM_INS.display(res);
-				}
-			} catch (SQLException e) {
-				logger.error("Erreur " + e);
-				Ihm.IHM_INS.display("Erreur lors de la récupérations des données");
+			switch (choice) {
+			case "Non":
+				noExport(request, c);
+				break;
+			case "Excel":
+				excelExport(request, c);
+				break;
+			default:
+				break;
 			}
 		}	
 	}
 
-	@Override
-	public void exportAvailablePiecePerModelToExcelFile() {
-		String request = "SELECT m.label, p.label, r.quantity, p.price, p.price*r.quantity total\r\n"
-				+ "FROM Piece p\r\n" + "JOIN Reference r ON p.idReference = r.idReference\r\n"
-				+ "JOIN Piece_Vehicule pv ON p.idPiece = pv.idPiece \r\n"
-				+ "JOIN Vehicule v ON pv.numberPlate = v.numberPlate \r\n" + "JOIN Model m ON m.idModel = v.idModel;";
-		Connection c = MyConnection.getConnection();
-		if (c != null) {
-			try {
-				PreparedStatement ps = c.prepareStatement(request);
-				ResultSet resultat = ps.executeQuery();
-				ExcelExport excExp = new ExcelExport();
-				Map<String, Object[]> data = excExp.getData();
-				data.put("1", new Object[] { "Modele", "Pièce", "Quantité", "Prix", "Total" });
-				int i = 1;
-				while (resultat.next()) {
-					i++;
-					String modelLabel = resultat.getString("m.label");
-					String pieceLabel = resultat.getString("p.label");
-					int quantity = resultat.getInt("r.quantity");
-					float price = resultat.getFloat("p.price");
-					float total = resultat.getFloat("total");
-					String res = "\nModele: " + modelLabel + "\nPièce: " + pieceLabel + "\nQuantité: " + quantity
-							+ "\nPrix: " + price + "\nTotal: " + total;
-					IHM_INS.display(res);
-					data.put(String.valueOf(i), new Object[] { modelLabel, pieceLabel, quantity, price, total });
-					Set<String> keyset = data.keySet();
-					int rownum = 0;
-					for (String key : keyset) {
-						Row row = excExp.getSheet().createRow(rownum++);
-						Object[] objArr = data.get(key);
-						int cellnum = 0;
-						for (Object obj : objArr) {
-							Cell cell = row.createCell(cellnum++);
-							if (obj instanceof String) {								
-								cell.setCellValue((String) obj);
-							} else if (obj instanceof Float) {
-								cell.setCellValue((Float) obj);
-							}
-							else if (obj instanceof Integer) {								
-								cell.setCellValue((Integer) obj);
-							}
+	private void noExport(String request, Connection c) {
+		try {
+			PreparedStatement ps = c.prepareStatement(request);
+			ResultSet resultat = ps.executeQuery();
+			while (resultat.next()) {
+				String modelLabel = resultat.getString("m.label");
+				String pieceLabel = resultat.getString("p.label");
+				int quantity = resultat.getInt("r.quantity");
+				float price = resultat.getFloat("p.price");
+				float total = resultat.getFloat("total");
+				String res = "\nModele: " + modelLabel + "\nPièce: " + pieceLabel + "\nQuantité: " + quantity
+						+ "\nPrix: " + price + "\nTotal: " + total;
+				IHM_INS.display(res);
+			}
+		} catch (SQLException e) {
+			logger.error("Erreur " + e);
+			Ihm.IHM_INS.display("Erreur lors de la récupérations des données");
+		}
+	}	
+
+	private void excelExport(String request, Connection c) {
+		try {
+			PreparedStatement ps = c.prepareStatement(request);
+			ResultSet resultat = ps.executeQuery();
+			ExcelExport excExp = new ExcelExport();
+			Map<String, Object[]> data = excExp.getData();
+			data.put("1", new Object[] { "Modele", "Pièce", "Quantité", "Prix", "Total" });
+			int i = 1;
+			while (resultat.next()) {
+				i++;
+				String modelLabel = resultat.getString("m.label");
+				String pieceLabel = resultat.getString("p.label");
+				int quantity = resultat.getInt("r.quantity");
+				float price = resultat.getFloat("p.price");
+				float total = resultat.getFloat("total");
+				String res = "\nModele: " + modelLabel + "\nPièce: " + pieceLabel + "\nQuantité: " + quantity
+						+ "\nPrix: " + price + "\nTotal: " + total;
+				IHM_INS.display(res);
+				data.put(String.valueOf(i), new Object[] { modelLabel, pieceLabel, quantity, price, total });
+				Set<String> keyset = data.keySet();
+				int rownum = 0;
+				for (String key : keyset) {
+					Row row = excExp.getSheet().createRow(rownum++);
+					Object[] objArr = data.get(key);
+					int cellnum = 0;
+					for (Object obj : objArr) {
+						Cell cell = row.createCell(cellnum++);
+						if (obj instanceof String) {								
+							cell.setCellValue((String) obj);
+						} else if (obj instanceof Float) {
+							cell.setCellValue((Float) obj);
+						}
+						else if (obj instanceof Integer) {								
+							cell.setCellValue((Integer) obj);
 						}
 					}
-					try {
-						FileOutputStream out = new FileOutputStream(
-								new File("exportAvailablePiecePerModelToExcelFile.xlsx"));
-						excExp.getWorkbook().write(out);
-						out.close();
-						System.out
-								.println("exportAvailablePiecePerModelToExcelFile.xlsx written successfully on disk.");
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
 				}
-
-			} catch (SQLException e) {
-				logger.error("Erreur " + e);
-				Ihm.IHM_INS.display("Erreur lors de la récupérations des données");
+				try {
+					FileOutputStream out = new FileOutputStream(
+							new File("exportAvailablePiecePerModelToExcelFile.xlsx"));
+					excExp.getWorkbook().write(out);
+					out.close();
+					System.out
+							.println("exportAvailablePiecePerModelToExcelFile.xlsx written successfully on disk.");
+				} catch (Exception e) {
+					logger.error("Erreur " + e);
+					IHM_INS.display("Une erreur est survenue lors de l'export Excel !");
+				}
 			}
+
+		} catch (SQLException e) {
+			logger.error("Erreur " + e);
+			Ihm.IHM_INS.display("Erreur lors de la récupérations des données");
 		}
 	}
 }
