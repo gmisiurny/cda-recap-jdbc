@@ -6,12 +6,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.cda.jdbc.dao.IPieceDAO;
-import com.cda.jdbc.data.Piece;
 import com.cda.jdbc.data.Piece;
 import com.cda.jdbc.ihm.Ihm;
 
@@ -177,5 +175,34 @@ public class PieceDAOImpl implements IPieceDAO {
 			}
 		}
 		return isIn;
+	}
+
+	@Override
+	public void listAvailablePiecePerModel() {
+		String request = "SELECT m.label, p.label, r.quantity, p.price, p.price*r.quantity total\r\n"
+				+ "FROM Piece p\r\n"
+				+ "JOIN Reference r ON p.idReference = r.idReference\r\n"
+				+ "JOIN Piece_Vehicule pv ON p.idPiece = pv.idPiece \r\n"
+				+ "JOIN Vehicule v ON pv.numberPlate = v.numberPlate \r\n"
+				+ "JOIN Model m ON m.idModel = v.idModel;";
+		Connection c = MyConnection.getConnection();
+		if (c != null) {
+			try {
+				PreparedStatement ps = c.prepareStatement(request);
+				ResultSet resultat = ps.executeQuery();
+				while (resultat.next()) {
+					String modelLabel = resultat.getString("m.label");
+					String pieceLabel = resultat.getString("p.label");
+					int quantity = resultat.getInt("r.quantity");
+					float price = resultat.getFloat("p.price");
+					float total = resultat.getFloat("total");
+					String res = "Modele: "+ modelLabel + "\nPièce: " + pieceLabel + "\nQuantité: " + quantity + "\nPrix: " + price + "\nTotal: " + total + "\n";
+					IHM_INS.display(res, true);					
+				}
+			} catch(SQLException e) {
+				logger.error("Erreur " + e);
+				Ihm.IHM_INS.display("Erreur lors de la récupérations des données");
+			}
+		}		
 	}
 }
