@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cda.jdbc.dao.IVehicleDAO;
 import com.cda.jdbc.data.Vehicle;
-
+import com.cda.jdbc.ihm.Ihm;
 
 public class VehicleDAOImpl implements IVehicleDAO {
 	private static final Logger logger = LoggerFactory.getLogger(VehicleDAOImpl.class);
@@ -24,15 +24,13 @@ public class VehicleDAOImpl implements IVehicleDAO {
 		if (c != null) {
 			try {
 				PreparedStatement ps = c.prepareStatement("SELECT * FROM Vehicule WHERE numberPlate = ?");
-				ps.setString(1,vehicle.getNumberPlate());
+				ps.setString(1, vehicle.getNumberPlate());
 				ResultSet result = ps.executeQuery();
-				if(vehicle.getIdBrand()<0) {
+				if (vehicle.getIdBrand() < 0) {
 					IHM_INS.display("La marque n'existe pas dans la BDD");
-				}
-				else if(vehicle.getIdModel()<0) {
+				} else if (vehicle.getIdModel() < 0) {
 					IHM_INS.display("Le modèle n'existe pas dans la BDD");
-				}
-				else if (!result.next()) {
+				} else if (!result.next()) {
 					ps = c.prepareStatement("INSERT INTO Vehicule VALUES (?,?,?,?); ");
 					ps.setString(1, vehicle.getNumberPlate());
 					ps.setInt(2, vehicle.getYearProduct());
@@ -46,7 +44,7 @@ public class VehicleDAOImpl implements IVehicleDAO {
 					IHM_INS.display("Véhicule déjà dans la BDD");
 				}
 			} catch (SQLException e) {
-				logger.error("erreur "+e);
+				logger.error("erreur " + e);
 				e.printStackTrace();
 			}
 		}
@@ -85,7 +83,7 @@ public class VehicleDAOImpl implements IVehicleDAO {
 		if (c != null) {
 			try {
 				PreparedStatement ps = c.prepareStatement("SELECT * FROM Vehicule WHERE numberPlate = ?;");
-				ps.setString(1,numberPlate);
+				ps.setString(1, numberPlate);
 				ResultSet result = ps.executeQuery();
 				if (!result.next()) {
 					logger.warn("Le véhicule " + numberPlate + " n'existe pas");
@@ -98,16 +96,17 @@ public class VehicleDAOImpl implements IVehicleDAO {
 						logger.info("Suppression de " + numberPlate + " dans la table Vehicule");
 						IHM_INS.display("Suppression de " + numberPlate + " dans la table Vehicule");
 					}
-					// Si au moins une vente est liée au véhicule , alors impossible de le supprimer, on
+					// Si au moins une vente est liée au véhicule , alors impossible de le
+					// supprimer, on
 					// renverra le message suivant
 					catch (SQLIntegrityConstraintViolationException sqle) {
-						logger.error("erreur "+sqle);
+						logger.error("erreur " + sqle);
 						IHM_INS.display(
 								"Impossible de supprimer le véhicule, veuillez avant tout supprimer les ventes qui y sont associées");
 					}
 				}
 			} catch (SQLException e) {
-				logger.error("erreur "+e);
+				logger.error("erreur " + e);
 				e.printStackTrace();
 			}
 		}
@@ -121,6 +120,38 @@ public class VehicleDAOImpl implements IVehicleDAO {
 	@Override
 	public int getId(String nom) {
 		return -1;
+	}
+
+	@Override
+	public void piecesPerCategoryForMostRecentVehicules() {
+		String request = "SELECT v.numberPlate \"Immatriculation\", v.yearProduct \"Année de production\", p.price \"Prix\", r.reference \"Référence\", r.quantity \"Quantité\", c.label \"Catégorie\"\r\n"
+				+ "FROM Vehicule v \r\n" + "JOIN Vehicule_Piece vp ON v.numberPlate = vp.numberPlate \r\n"
+				+ "JOIN Piece p ON vp.idPiece = p.idPiece \r\n"
+				+ "JOIN Reference r ON p.idReference = r.idReference \r\n"
+				+ "JOIN Category c ON p.idCategory = c.idCategory \r\n" + "WHERE r.quantity != 0\r\n"
+				+ "ORDER BY v.yearProduct DESC\r\n" + "LIMIT 3;";
+		Connection c = MyConnection.getConnection();
+		if (c != null) {
+			try {
+				PreparedStatement ps = c.prepareStatement(request);
+				ResultSet resultat = ps.executeQuery();
+				while (resultat.next()) {
+					String numberPlate = resultat.getString("Immatriculation");
+					String yearProduct = resultat.getString("Année de production");
+					float price = resultat.getFloat("Prix");
+					String reference = resultat.getString("Référence");
+					int quantity = resultat.getInt("Quantité");
+					String category = resultat.getString("Catégorie");
+					String res = "\nImmatriculation: " + numberPlate + "\nAnnée de production: " + yearProduct
+							+ "\nPrix: " + price + "\nPrix: " + price + "\nRéférence: " + reference + "\nQuantité: "
+							+ quantity + "\nCategorie: " + category;
+					IHM_INS.display(res);
+				}
+			} catch (SQLException e) {
+				logger.error("Erreur " + e);
+				Ihm.IHM_INS.display("Erreur lors de la récupérations des données");
+			}
+		}
 	}
 
 }
