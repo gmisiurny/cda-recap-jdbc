@@ -1,16 +1,22 @@
 package com.cda.jdbc.daosql;
 
 import static com.cda.jdbc.ihm.Ihm.IHM_INS;
-
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.cda.jdbc.dao.IPieceDAO;
 import com.cda.jdbc.data.Piece;
+import com.cda.jdbc.export.ExcelExport;
 import com.cda.jdbc.ihm.Ihm;
 
 public class PieceDAOImpl implements IPieceDAO {
@@ -199,6 +205,69 @@ public class PieceDAOImpl implements IPieceDAO {
 							+ "\nPrix: " + price + "\nTotal: " + total;
 					IHM_INS.display(res);
 				}
+			} catch (SQLException e) {
+				logger.error("Erreur " + e);
+				Ihm.IHM_INS.display("Erreur lors de la récupérations des données");
+			}
+		}	
+	}
+
+	@Override
+	public void exportAvailablePiecePerModelToExcelFile() {
+		String request = "SELECT m.label, p.label, r.quantity, p.price, p.price*r.quantity total\r\n"
+				+ "FROM Piece p\r\n" + "JOIN Reference r ON p.idReference = r.idReference\r\n"
+				+ "JOIN Piece_Vehicule pv ON p.idPiece = pv.idPiece \r\n"
+				+ "JOIN Vehicule v ON pv.numberPlate = v.numberPlate \r\n" + "JOIN Model m ON m.idModel = v.idModel;";
+		Connection c = MyConnection.getConnection();
+		if (c != null) {
+			try {
+				PreparedStatement ps = c.prepareStatement(request);
+				ResultSet resultat = ps.executeQuery();
+				ExcelExport excExp = new ExcelExport();
+				Map<String, Object[]> data = excExp.getData();
+				data.put("1", new Object[] { "Modele", "Pièce", "Quantité", "Prix", "Total" });
+				int i = 1;
+				while (resultat.next()) {
+					i++;
+					String modelLabel = resultat.getString("m.label");
+					String pieceLabel = resultat.getString("p.label");
+					int quantity = resultat.getInt("r.quantity");
+					float price = resultat.getFloat("p.price");
+					float total = resultat.getFloat("total");
+					String res = "\nModele: " + modelLabel + "\nPièce: " + pieceLabel + "\nQuantité: " + quantity
+							+ "\nPrix: " + price + "\nTotal: " + total;
+					IHM_INS.display(res);
+					data.put(String.valueOf(i), new Object[] { modelLabel, pieceLabel, quantity, price, total });
+					Set<String> keyset = data.keySet();
+					int rownum = 0;
+					for (String key : keyset) {
+						Row row = excExp.getSheet().createRow(rownum++);
+						Object[] objArr = data.get(key);
+						int cellnum = 0;
+						for (Object obj : objArr) {
+							Cell cell = row.createCell(cellnum++);
+							if (obj instanceof String) {								
+								cell.setCellValue((String) obj);
+							} else if (obj instanceof Float) {
+								cell.setCellValue((Float) obj);
+							}
+							else if (obj instanceof Integer) {								
+								cell.setCellValue((Integer) obj);
+							}
+						}
+					}
+					try {
+						FileOutputStream out = new FileOutputStream(
+								new File("exportAvailablePiecePerModelToExcelFile.xlsx"));
+						excExp.getWorkbook().write(out);
+						out.close();
+						System.out
+								.println("exportAvailablePiecePerModelToExcelFile.xlsx written successfully on disk.");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
 			} catch (SQLException e) {
 				logger.error("Erreur " + e);
 				Ihm.IHM_INS.display("Erreur lors de la récupérations des données");
