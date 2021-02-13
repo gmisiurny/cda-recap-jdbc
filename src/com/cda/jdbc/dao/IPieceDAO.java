@@ -10,4 +10,5 @@ public interface IPieceDAO extends IDAO<Piece> {
 	void updatePrice(String label, float price);
 	void updateLabelAndPrice(String oldLabel, String newLabel, float price);
 	void listAvailablePiecePerModel();
+	void exportAvailablePiecePerModelToExcelFile();
 }
