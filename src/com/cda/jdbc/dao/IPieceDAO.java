@@ -9,4 +9,5 @@ public interface IPieceDAO extends IDAO<Piece> {
 	boolean isInDatabase(String label);
 	void updatePrice(String label, float price);
 	void updateLabelAndPrice(String oldLabel, String newLabel, float price);
+	void listAvailablePiecePerModel();
 }
