@@ -81,7 +81,8 @@ public class PieceDAOImpl implements IPieceDAO {
 				IHM_INS.display("Suppression de la pièce " + label + " dans la table Piece");
 			} catch (SQLException sqle) {
 				logger.error("erreur " + sqle);
-				IHM_INS.display("Impossible de supprimer la pièce, veuillez avant tout supprimer les ventes qui y sont associées");
+				IHM_INS.display(
+						"Impossible de supprimer la pièce, veuillez avant tout supprimer les ventes qui y sont associées");
 			}
 		}
 	}
@@ -180,11 +181,9 @@ public class PieceDAOImpl implements IPieceDAO {
 	@Override
 	public void listAvailablePiecePerModel() {
 		String request = "SELECT m.label, p.label, r.quantity, p.price, p.price*r.quantity total\r\n"
-				+ "FROM Piece p\r\n"
-				+ "JOIN Reference r ON p.idReference = r.idReference\r\n"
+				+ "FROM Piece p\r\n" + "JOIN Reference r ON p.idReference = r.idReference\r\n"
 				+ "JOIN Piece_Vehicule pv ON p.idPiece = pv.idPiece \r\n"
-				+ "JOIN Vehicule v ON pv.numberPlate = v.numberPlate \r\n"
-				+ "JOIN Model m ON m.idModel = v.idModel;";
+				+ "JOIN Vehicule v ON pv.numberPlate = v.numberPlate \r\n" + "JOIN Model m ON m.idModel = v.idModel;";
 		Connection c = MyConnection.getConnection();
 		if (c != null) {
 			try {
@@ -196,13 +195,14 @@ public class PieceDAOImpl implements IPieceDAO {
 					int quantity = resultat.getInt("r.quantity");
 					float price = resultat.getFloat("p.price");
 					float total = resultat.getFloat("total");
-					String res = "Modele: "+ modelLabel + "\nPièce: " + pieceLabel + "\nQuantité: " + quantity + "\nPrix: " + price + "\nTotal: " + total + "\n";
-					IHM_INS.display(res, true);					
+					String res = "\nModele: " + modelLabel + "\nPièce: " + pieceLabel + "\nQuantité: " + quantity
+							+ "\nPrix: " + price + "\nTotal: " + total;
+					IHM_INS.display(res);
 				}
-			} catch(SQLException e) {
+			} catch (SQLException e) {
 				logger.error("Erreur " + e);
 				Ihm.IHM_INS.display("Erreur lors de la récupérations des données");
 			}
-		}		
+		}
 	}
 }
