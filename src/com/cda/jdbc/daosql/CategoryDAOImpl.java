@@ -63,7 +63,7 @@ public class CategoryDAOImpl implements ICategoryDAO{
 				ResultSet result = ps.executeQuery();
 				logger.info("Ajout des catégories à la liste");
 				while (result.next()) {
-					category.add(new Category(result.getInt("id"), result.getString("label")));
+					category.add(new Category(result.getInt("idCategory"), result.getString("label")));
 				}
 			} catch (SQLException e) {
 				logger.error("erreur "+e);
