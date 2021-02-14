@@ -3,7 +3,7 @@ package com.cda.jdbc.menu.action;
 import static com.cda.jdbc.ihm.Ihm.IHM_INS;
 
 final class SoldPiece extends Action {
-	private static final int ID = 21;
+	private static final int ID = 6;
 	private static final String DESC = "Vendre une pièce";
 	
 	protected SoldPiece() {

@@ -6,7 +6,7 @@ import com.cda.jdbc.dao.IVehicleDAO;
 import com.cda.jdbc.daosql.VehicleDAOImpl;
 
 final class MostRecentVehicules extends Action {
-	private static final int ID = 24;
+	private static final int ID = 9;
 	private static final String DESC = "Les 3 voitures les plus récentes avec pour chaque voiture : le nombre des pièces (disponibles) par catégorie.";
 	private IVehicleDAO vehiculeDAO;
 
