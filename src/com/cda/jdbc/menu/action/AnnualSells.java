@@ -10,7 +10,7 @@ import com.cda.jdbc.data.AnnualSales;
 
 
 final class AnnualSells extends Action {
-	private static final int ID = 23;
+	private static final int ID = 8;
 	private static final String DESC = "Les chiffres d'affaires annuels listés par année, en décroissant par année";
 	private IAnnualSalesDAO annualSalesDAO;
 

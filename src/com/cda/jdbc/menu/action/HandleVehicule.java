@@ -15,15 +15,15 @@ import com.cda.jdbc.data.Vehicle;
 import com.cda.jdbc.ihm.Ihm;
 import com.cda.jdbc.ihm.WrongInputException;
 
-final class CreateVehicule extends Action {
-	private static final int ID = 17;
-	private static final String DESC = "Créer un véhicule";
+final class HandleVehicule extends Action {
+	private static final int ID = 2;
+	private static final String DESC = "Gérer les véhicules";
 	private IVehicleDAO vehicleDAO;
 	private IModelDAO modelDAO;
 	private IBrandDAO brandDAO;
-	private static final Logger logger = LoggerFactory.getLogger(CreateVehicule.class);
+	private static final Logger logger = LoggerFactory.getLogger(HandleVehicule.class);
 	
-	protected CreateVehicule() {
+	protected HandleVehicule() {
 		super(ID, DESC);
 		this.vehicleDAO=new VehicleDAOImpl();
 		this.modelDAO=new ModelDAOImpl();
@@ -32,6 +32,39 @@ final class CreateVehicule extends Action {
 
 	@Override
 	public boolean execute(){
+		IHM_INS.display("Quelle action voulez-vous effectuer ?");
+		IHM_INS.display("1) Créer un véhicule");
+		IHM_INS.display("2) Lire un véhicule");
+		IHM_INS.display("3) Supprimer un véhicule");
+		IHM_INS.display("4) Revenir au menu précédent");
+		int choice = 0;
+		try {
+			choice = IHM_INS.readNaturalNb();
+		} catch (WrongInputException e) {
+			logger.error("Erreur " + e);
+			IHM_INS.display("Mauvaise saisie !");
+		}
+		switch (choice) {
+		case 1:
+			create();
+			break;
+		case 2:
+			IHM_INS.display("Comment s'appelle le véhicule à consulter ?");
+			String label = Ihm.IHM_INS.readWord();
+			System.out.println(this.vehicleDAO.findByName(label));
+			break;
+		case 3:
+			IHM_INS.display("Comment s'appelle le véhicule à supprimer ?");
+			String label02 = Ihm.IHM_INS.readWord();
+			this.vehicleDAO.remove(label02);
+			break;
+		default:
+			break;
+		}
+		return Boolean.TRUE;
+	}
+
+	private void create() {
 		IHM_INS.display("Quelle est la plaque d'immatriculation du véhicule ?");
 		String numberPlate = Ihm.IHM_INS.readWord();
 		int yearProduct;
@@ -53,6 +86,5 @@ final class CreateVehicule extends Action {
 		int idBrand = brandDAO.getId(labelBrand);
 		Vehicle vehicle = new Vehicle(numberPlate,yearProduct,idModel,idBrand);
 		this.vehicleDAO.save(vehicle);
-		return Boolean.TRUE;
 	}
 }
