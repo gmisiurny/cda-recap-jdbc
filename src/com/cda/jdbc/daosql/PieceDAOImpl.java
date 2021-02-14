@@ -1,17 +1,29 @@
 package com.cda.jdbc.daosql;
 
 import static com.cda.jdbc.ihm.Ihm.IHM_INS;
+
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.cda.jdbc.dao.IPieceDAO;
@@ -199,10 +211,61 @@ public class PieceDAOImpl implements IPieceDAO {
 			case "Excel":
 				excelExport(request, c);
 				break;
+			case "Html":
+				htmlExport(request, c);
+				break;
 			default:
 				break;
 			}
 		}	
+	}
+
+	private void htmlExport(String request, Connection c) {
+		PreparedStatement ps;
+		try {
+			ps = c.prepareStatement(request);
+			ResultSet resultat = ps.executeQuery();
+			int i = 0;
+			Map<String, Object[]> data = new TreeMap<>();
+			ArrayList<Map<String, Object[]>> list = new ArrayList<>();
+			while(resultat.next()) {
+				i++;
+				String modelLabel = resultat.getString("m.label");
+				String pieceLabel = resultat.getString("p.label");
+				int quantity = resultat.getInt("r.quantity");
+				float price = resultat.getFloat("p.price");
+				float total = resultat.getFloat("total");
+				String res = "\nModele: " + modelLabel + "\nPièce: " + pieceLabel + "\nQuantité: " + quantity
+						+ "\nPrix: " + price + "\nTotal: " + total;
+				IHM_INS.display(res);
+				data.put(String.valueOf(i), new Object[] { modelLabel, pieceLabel, quantity, price, total });
+			}
+			list.add(data);
+			Velocity.init();
+			Template template = Velocity.getTemplate("templates/index.vm");
+			Writer writer = null;
+			VelocityContext context = new VelocityContext();
+			Collection<Object[]> collec = data.values();
+			context.put("prdList", collec);
+			try {
+				writer = new BufferedWriter(new OutputStreamWriter(
+						new FileOutputStream("exportAvailablePiecePerModelToHTMLFile.html"), "utf-8"));
+				template.merge(context, writer);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					writer.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		} catch (SQLException e) {
+			logger.error("Erreur " + e);
+			Ihm.IHM_INS.display("Erreur lors de la récupérations des données");
+		}
+		
+		
 	}
 
 	private void noExport(String request, Connection c) {
