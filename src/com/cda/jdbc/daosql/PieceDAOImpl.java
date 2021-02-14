@@ -319,8 +319,7 @@ public class PieceDAOImpl implements IPieceDAO {
 							cell.setCellValue((String) obj);
 						} else if (obj instanceof Float) {
 							cell.setCellValue((Float) obj);
-						}
-						else if (obj instanceof Integer) {								
+						} else if (obj instanceof Integer) {								
 							cell.setCellValue((Integer) obj);
 						}
 					}
@@ -337,7 +336,6 @@ public class PieceDAOImpl implements IPieceDAO {
 					IHM_INS.display("Une erreur est survenue lors de l'export Excel !");
 				}
 			}
-
 		} catch (SQLException e) {
 			logger.error("Erreur " + e);
 			Ihm.IHM_INS.display("Erreur lors de la récupérations des données");
